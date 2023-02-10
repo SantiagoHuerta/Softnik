@@ -43,6 +43,8 @@ class MenuActivity : AppCompatActivity() {
     private fun createSessionPreference(jwt: String){
         val preferences = PreferenceHelper.defaultPrefs(this)
         preferences["jwt"]= jwt
+
+
     }
 
     /*
