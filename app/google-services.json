@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "955012814300",
+    "project_id": "security-app-a6400",
+    "storage_bucket": "security-app-a6400.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:955012814300:android:29bed7081dd96e28592b19",
+        "android_client_info": {
+          "package_name": "com.example.rrhhapp.ui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "955012814300-dbaj4ksm75if2qcruqecj6o7monotrmt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rrhhapp.ui",
+            "certificate_hash": "e140637bf27744a5596620ceaab4bd6d45884071"
+          }
+        },
+        {
+          "client_id": "955012814300-2g6mcj2lah3j84ivli8difol3nf5nfrl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFJ6r1gLiaQIToVs8-xk88kz8RD-O8ys0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "955012814300-2g6mcj2lah3j84ivli8difol3nf5nfrl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

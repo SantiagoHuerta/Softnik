@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.Forget_user_or_pasword">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="220dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ingrese el email en donde quiere recibir su contraseña"
+            android:textSize="20sp"
+            android:fontFamily="@font/coovletica"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="8dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Corre electronico"
+            android:fontFamily="@font/coovletica"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="25dp"
+            android:inputType="textEmailAddress"
+            android:textSize="20sp"
+            android:background="@drawable/edittext_custom"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="el correo ha sido enviado"
+            android:textSize="20sp"
+            android:textColor="@color/teal_700"
+            android:layout_gravity="right"
+            android:paddingEnd="30dp"
+            android:visibility="gone"
+            android:fontFamily="@font/coovletica"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enviar"
+            android:layout_marginRight="26dp"
+            android:layout_marginLeft="26dp"
+            android:layout_marginBottom="26dp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/teal_700"
+            android:background="@drawable/rounded_button"/>
+
+        <TextView
+            android:id="@+id/tv_back_to_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:clickable="true"
+            android:fontFamily="@font/coovletica"
+            android:text="volver a Inicio de sesion"
+            android:textSize="20sp"
+            android:paddingBottom="10dp"/>
+
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
+
