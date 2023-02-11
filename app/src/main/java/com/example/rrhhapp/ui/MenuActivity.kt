@@ -18,9 +18,7 @@ class MenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
-
         val etWelcome = findViewById<TextView>(R.id.tv_welcome)
-
 
         val bundle = intent.extras
         val user = bundle?.getString("user")
