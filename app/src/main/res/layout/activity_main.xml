@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,7 +14,7 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Inicio de sesion"
+          android:text="Softnik"
           android:textSize="60sp"
           android:textColor="@color/black"
           android:fontFamily="@font/coovletica"
@@ -69,31 +69,24 @@
           android:fontFamily="@font/coovletica"
           android:text="Olvidaste tu contraseña?"
           android:textSize="20sp" />
+
+      <Button
+          android:id="@+id/btn_login"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom"
+          android:layout_marginLeft="26dp"
+          android:layout_marginRight="26dp"
+          android:layout_marginTop="250dp"
+          android:background="@drawable/rounded_button"
+          android:backgroundTint="@color/teal_700"
+          android:text="Iniciar sesion"
+          android:textColor="@color/white" />
   </LinearLayout>
 
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="bottom">
-
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Iniciar sesion"
-            android:layout_marginRight="26dp"
-            android:layout_marginLeft="26dp"
-            android:layout_marginBottom="26dp"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/teal_700"
-            android:background="@drawable/rounded_button"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
     </LinearLayout>
-
-
-
-
-
-</android.support.design.widget.CoordinatorLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -1,7 +1,8 @@
 package com.example.rrhhapp.ui;
 
-import android.Manifest;
-import android.support.v4.app.ActivityCompat;
+
+import android.content.SharedPreferences;
+import android.os.Bundle;
 
 public class sdas {
     private int hola= 0;
@@ -10,5 +11,8 @@ public class sdas {
     private void j(){
 
     }
+
+
+
 }
 
