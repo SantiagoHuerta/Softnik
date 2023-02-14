@@ -1,26 +1,26 @@
 package com.example.rrhhapp.ui
 
+import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.*
 import com.example.rrhhapp.R
 import com.example.rrhhapp.pojo.LocationPojo
-import com.example.rrhhapp.util.PreferenceHelper
-import com.example.rrhhapp.util.PreferenceHelper.get
-import com.example.rrhhapp.util.PreferenceHelper.set
+import com.example.rrhhapp.util.MyCustomPrefs
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class MenuActivity : AppCompatActivity() {
 
@@ -28,54 +28,60 @@ class MenuActivity : AppCompatActivity() {
     private lateinit var database: FirebaseDatabase
     private lateinit var refLocation: DatabaseReference
     private var preferencesTenant = ""
-    private lateinit var sharedPreferences: SharedPreferences
 
-    @SuppressLint("SetTextI18n", "ResourceAsColor")
+    @SuppressLint("SetTextI18n", "ResourceAsColor", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
 
-        sharedPreferences = getSharedPreferences("infoTenant", Context.MODE_PRIVATE)
-        val tenant = PreferenceHelper.customPrefs(this, "infoTenant").getString("tenant", "")
+        val tenant = MyCustomPrefs.getTenant(this)
         preferencesTenant = tenant.toString()
-        Toast.makeText(this, preferencesTenant, Toast.LENGTH_SHORT).show()
-
         database = FirebaseDatabase.getInstance()
         refLocation = database.getReference("location")
 
-        val etWelcome = findViewById<TextView>(R.id.tv_welcome)
+        val bundle = intent.extras
+        val etWelcomeUser = findViewById<TextView>(R.id.tv_user_name)
         val btnStartJourney = findViewById<TextView>(R.id.btn_start_journey)
         val btnEndJourney = findViewById<TextView>(R.id.btn_end_journey)
-        val bundle = intent.extras
         val btnLogout = findViewById<TextView>(R.id.btn_logout)
+        btnEndJourney.setBackgroundColor(Color.GRAY)
+
+        etWelcomeUser.text = bundle?.getString("user")
 
         btnLogout.setOnClickListener {
             goToLogin()
         }
 
         btnStartJourney.setOnClickListener {
-            getLocation()
-           // btnStartJourney.isEnabled = false
+            getLocation("Entry")
+            btnEndJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
+            btnStartJourney.setBackgroundColor(resources.getColor(R.color.gray))
+            btnStartJourney.isEnabled = false
             btnEndJourney.isEnabled = true
+        }
+
+        btnEndJourney.setOnClickListener {
+            getLocation("Exit")
+            btnEndJourney.setBackgroundColor(resources.getColor(R.color.gray))
+            btnStartJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
+            btnStartJourney.isEnabled = true
+            btnEndJourney.isEnabled = false
         }
     }
 
     private fun goToLogin(){
-        createSessionPreference("")
+
+        MyCustomPrefs.clearPrefs(this)
+
         val intent = Intent(this,  MainActivity::class.java)
         startActivity(intent)
         finish()
     }
 
+    private fun getLocation(concept : String){
+        val now = LocalDateTime.now()
 
-    private fun createSessionPreference(jwt: String){
-        val preferences = PreferenceHelper.defaultPrefs(this)
-        preferences["jwt"]= jwt
-    }
-
-
-    private fun getLocation(){
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        if(checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED){
             Toast.makeText(this, "Permisos de ubicacion concedidos", Toast.LENGTH_SHORT).show()
         }else{
@@ -91,7 +97,7 @@ class MenuActivity : AppCompatActivity() {
             if (location != null) {
                 val latitud = location.latitude
                 val longuitud = location.longitude
-                var locationToDatabase = LocationPojo(preferencesTenant, latitud, longuitud, Instant.now().toString(),"Entry" )
+                var locationToDatabase = LocationPojo(preferencesTenant, latitud, longuitud, DateTimeFormatter.ofPattern("dd/mm/yyyy HH:mm:ss").format(now), concept)
                 refLocation.push().setValue(locationToDatabase)
 
                 Toast.makeText(

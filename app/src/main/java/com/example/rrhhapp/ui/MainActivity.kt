@@ -7,20 +7,18 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import com.example.rrhhapp.R
 import com.example.rrhhapp.io.ApiService
 import com.example.rrhhapp.io.response.LoginResponse
 import com.example.rrhhapp.model.User
+import com.example.rrhhapp.util.MyCustomPrefs
 import com.example.rrhhapp.util.PreferenceHelper
-import com.example.rrhhapp.util.PreferenceHelper.get
 import com.example.rrhhapp.util.PreferenceHelper.set
 import retrofit2.Call
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
-    private  var tenant: String = ""
     private val apiService: ApiService by lazy {
         ApiService.create()
     }
@@ -29,38 +27,28 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val btnGoMenu = findViewById<Button>(R.id.btn_login)
-        val tvGoToForgotPassword = findViewById<TextView>(R.id.tv_go_to_forgot_password)
-        val  preferences = PreferenceHelper.defaultPrefs(this)
 
-        if (preferences["jwt", ""].contains("."))
+        if (MyCustomPrefs.getIsUserLogged(this)){
             goToMenu()
+        }
 
         btnGoMenu.setOnClickListener {
             performLogin()
         }
 
-        tvGoToForgotPassword.setOnClickListener{
-            goToForgetPassword()
-        }
     }
 
 
     private fun goToForgetPassword(){
-        val intent = Intent(this, Forget_user_or_pasword::class.java)
+        val intent = Intent(this, ForgetUserOrPassword::class.java)
         startActivity(intent)
     }
-
 
     private fun goToMenu(){
         val etEmail = findViewById<EditText>(R.id.et_email).text.toString()
         val etPassword = findViewById<EditText>(R.id.et_password).text.toString()
 
-        PreferenceHelper.customPrefs(this, "infoTenant").edit(true){
-            putString("tenant", tenant)
-        }
-
         val intent = Intent(this,  MenuActivity::class.java)
-        intent.putExtra("tenant", tenant)
         intent.putExtra("user", etEmail)
         intent.putExtra("password", etPassword)
         startActivity(intent)
@@ -91,8 +79,9 @@ class MainActivity : AppCompatActivity() {
                         return
                     }
                     if(loginResponse.access_token != null){
-                        createSessionPreference(loginResponse.access_token)
-                        tenant = loginResponse.tenant
+                        MyCustomPrefs.setJwt(loginResponse.access_token, this@MainActivity)
+                        MyCustomPrefs.setTenant(loginResponse.tenant, this@MainActivity)
+                        MyCustomPrefs.setIsUserLogged(true, this@MainActivity)
                         goToMenu()
                     }else{
                         Toast.makeText(applicationContext, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()

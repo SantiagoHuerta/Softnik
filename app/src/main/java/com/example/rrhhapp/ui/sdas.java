@@ -2,6 +2,7 @@ package com.example.rrhhapp.ui;
 
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 
 public class sdas {
@@ -11,8 +12,5 @@ public class sdas {
     private void j(){
 
     }
-
-
-
 }
 

@@ -16,19 +16,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="60sp"
+            android:text="Bienvenido"
             android:textColor="@color/black"
             android:fontFamily="@font/coovletica"
             android:layout_marginTop="60dp"
             android:layout_marginLeft="25dp"/>
 
         <TextView
+            android:id="@+id/tv_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:maxLength="15"
+            android:textSize="60dp"
             android:fontFamily="@font/coovletica"
             android:layout_marginLeft="25dp"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="10dp"/>
 
         <Button
             android:id="@+id/btn_info"
@@ -39,8 +43,7 @@
             android:layout_marginLeft="26dp"
             android:layout_marginBottom="26dp"
             android:textColor="@color/white"
-            android:backgroundTint="@color/teal_700"
-            android:background="@drawable/rounded_button"
+            android:background="@color/teal_700"
             android:drawableLeft="@drawable/ic_info"
             android:paddingLeft="12dp"/>
 
@@ -54,12 +57,10 @@
             android:layout_marginLeft="26dp"
             android:layout_marginBottom="26dp"
             android:textColor="@color/white"
-            android:backgroundTint="@color/teal_700"
-            android:background="@drawable/rounded_button"
+            android:background="@color/teal_700"
             android:drawableLeft="@drawable/account_arrow_right"
             android:paddingLeft="12dp"
-            android:onClick="getLocation"
-            tools:ignore="OnClick" />
+            android:onClick="getLocation"/>
 
         <Button
             android:id="@+id/btn_end_journey"
@@ -71,21 +72,19 @@
             android:layout_marginLeft="26dp"
             android:layout_marginBottom="26dp"
             android:textColor="@color/white"
-            android:backgroundTint="@color/gray"
-            android:background="@drawable/rounded_button"
+            android:background="@color/teal_700"
             android:drawableLeft="@drawable/account_arrow_left"
             android:paddingLeft="12dp"
-            android:onClick="getLocation"
-            tools:ignore="OnClick" />
+            android:onClick="getLocation"/>
 
         <Button
             android:id="@+id/btn_logout"
-            android:layout_width="match_parent"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="250dp"
+            android:layout_marginTop="200dp"
             android:layout_marginLeft="26dp"
             android:layout_marginRight="26dp"
-            android:background="@drawable/rounded_button"
+            android:background="@drawable/rounded_button_enable"
             android:backgroundTint="@color/teal_700"
             android:drawableLeft="@drawable/close_circle_outline"
             android:paddingLeft="12dp"
