@@ -6,11 +6,15 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat.*
+import androidx.core.content.ContextCompat.checkSelfPermission
+import butterknife.BindView
+import butterknife.Unbinder
 import com.example.rrhhapp.R
 import com.example.rrhhapp.util.MyCustomPrefs
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -35,16 +39,19 @@ class MenuActivity : AppCompatActivity() {
         val tenant = MyCustomPrefs.getTenant(this)
         preferencesTenant = tenant.toString()
         jwt = MyCustomPrefs.getJwt(this).toString()
-      //  database = FirebaseDatabase.getInstance()
-      //  refLocation = database.getReference("location")
-
-        val bundle = intent.extras
         val etWelcomeUser = findViewById<TextView>(R.id.tv_user_name)
         val btnStartJourney = findViewById<TextView>(R.id.btn_start_journey)
         val btnEndJourney = findViewById<TextView>(R.id.btn_end_journey)
         val btnLogout = findViewById<TextView>(R.id.btn_logout)
+        val tvStartDate = findViewById<TextView>(R.id.tv_start_date)
+        val tvEndDate = findViewById<TextView>(R.id.tv_end_date)
+
+      //database = FirebaseDatabase.getInstance()
+      //refLocation = database.getReference("location")
+
         btnEndJourney.setBackgroundColor(Color.GRAY)
 
+        val bundle = intent.extras
         etWelcomeUser.text = bundle?.getString("user")
 
         btnLogout.setOnClickListener {
@@ -52,33 +59,59 @@ class MenuActivity : AppCompatActivity() {
         }
 
         btnStartJourney.setOnClickListener {
-            val intent = Intent(this, PopUpConfirmSendLocation::class.java)
-            startActivity(intent)
-            val confirm = bundle?.getBoolean("confirm")
-            if(confirm==true){
-                getLocation("Entry")
-                btnEndJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
-                btnStartJourney.setBackgroundColor(resources.getColor(R.color.gray))
-                btnStartJourney.isEnabled = false
-                btnEndJourney.isEnabled = true
-            }
+
+            val alert = android.app.AlertDialog.Builder(this@MenuActivity)
+            alert.setMessage("Usted esta por enviar la informacion de inicio de su jornada")
+                .setCancelable(true)
+                .setPositiveButton(
+                    "CONFIRMAR"
+                ) { dialog, which ->
+                    getLocation("Entry")
+                    tvEndDate.visibility = GONE
+                    tvStartDate.visibility = VISIBLE
+                    tvStartDate.text = LocalDateTime.now().toString()
+
+                    btnEndJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
+                    btnStartJourney.setBackgroundColor(resources.getColor(R.color.gray))
+                    btnStartJourney.isEnabled = false
+                    btnEndJourney.isEnabled = true
+                }
+                .setNegativeButton(
+                    "VOLVER"
+                ) { dialog, which -> dialog.cancel() }
+            val title = alert.create()
+            title.setTitle("Aviso")
+            title.show()
         }
 
         btnEndJourney.setOnClickListener {
-            val intent = Intent(this, PopUpConfirmSendLocation::class.java)
-            startActivity(intent)
-            val confirm = bundle?.getBoolean("confirm")
-            if(confirm==true) {
-                getLocation("Exit")
-                btnEndJourney.setBackgroundColor(resources.getColor(R.color.gray))
-                btnStartJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
-                btnStartJourney.isEnabled = true
-                btnEndJourney.isEnabled = false
-            }
+
+            val alert = android.app.AlertDialog.Builder(this@MenuActivity)
+            alert.setMessage("Usted esta por enviar la informacion de salida de su jornada")
+                .setCancelable(true)
+                .setPositiveButton(
+                    "CONFIRMAR"
+                ) { dialog, which ->
+                    getLocation("Exit")
+                    tvStartDate.visibility = GONE
+                    tvEndDate.visibility = VISIBLE
+                    tvEndDate.text = LocalDateTime.now().toString()
+
+                    btnEndJourney.setBackgroundColor(resources.getColor(R.color.gray))
+                    btnStartJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
+                    btnStartJourney.isEnabled = true
+                    btnEndJourney.isEnabled = false
+                }
+                .setNegativeButton(
+                    "VOLVER"
+                ) { dialog, which -> dialog.cancel() }
+            val title = alert.create()
+            title.setTitle("Aviso")
+            title.show()
         }
     }
 
-    public fun goToLogin(){
+    fun goToLogin(){
         MyCustomPrefs.clearPrefs(this)
         val intent = Intent(this,  MainActivity::class.java)
         startActivity(intent)
@@ -88,10 +121,9 @@ class MenuActivity : AppCompatActivity() {
     private fun getLocation(concept : String){
         val now = LocalDateTime.now()
 
-
         if(checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED){
-            Toast.makeText(this, "Permisos de ubicacion concedidos", Toast.LENGTH_SHORT).show()
+
         }else{
             ActivityCompat.requestPermissions(
                 this, arrayOf(
@@ -105,7 +137,6 @@ class MenuActivity : AppCompatActivity() {
             if (location != null) {
                 val latitud = location.latitude
                 val longuitud = location.longitude
-
               //  var locationToDatabase = LocationPojo(preferencesTenant, latitud, longuitud, DateTimeFormatter.ofPattern("dd/mm/yyyy HH:mm:ss").format(now), concept)
               //  refLocation.push().setValue(locationToDatabase)
                 Toast.makeText(
@@ -113,5 +144,4 @@ class MenuActivity : AppCompatActivity() {
             }
         }
     }
-
 }
