@@ -8,19 +8,16 @@ import android.graphics.Color
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.*
 import com.example.rrhhapp.R
-import com.example.rrhhapp.pojo.LocationPojo
 import com.example.rrhhapp.util.MyCustomPrefs
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class MenuActivity : AppCompatActivity() {
 
@@ -28,6 +25,7 @@ class MenuActivity : AppCompatActivity() {
     private lateinit var database: FirebaseDatabase
     private lateinit var refLocation: DatabaseReference
     private var preferencesTenant = ""
+    private var jwt = ""
 
     @SuppressLint("SetTextI18n", "ResourceAsColor", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,8 +34,9 @@ class MenuActivity : AppCompatActivity() {
 
         val tenant = MyCustomPrefs.getTenant(this)
         preferencesTenant = tenant.toString()
-        database = FirebaseDatabase.getInstance()
-        refLocation = database.getReference("location")
+        jwt = MyCustomPrefs.getJwt(this).toString()
+      //  database = FirebaseDatabase.getInstance()
+      //  refLocation = database.getReference("location")
 
         val bundle = intent.extras
         val etWelcomeUser = findViewById<TextView>(R.id.tv_user_name)
@@ -53,26 +52,34 @@ class MenuActivity : AppCompatActivity() {
         }
 
         btnStartJourney.setOnClickListener {
-            getLocation("Entry")
-            btnEndJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
-            btnStartJourney.setBackgroundColor(resources.getColor(R.color.gray))
-            btnStartJourney.isEnabled = false
-            btnEndJourney.isEnabled = true
+            val intent = Intent(this, PopUpConfirmSendLocation::class.java)
+            startActivity(intent)
+            val confirm = bundle?.getBoolean("confirm")
+            if(confirm==true){
+                getLocation("Entry")
+                btnEndJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
+                btnStartJourney.setBackgroundColor(resources.getColor(R.color.gray))
+                btnStartJourney.isEnabled = false
+                btnEndJourney.isEnabled = true
+            }
         }
 
         btnEndJourney.setOnClickListener {
-            getLocation("Exit")
-            btnEndJourney.setBackgroundColor(resources.getColor(R.color.gray))
-            btnStartJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
-            btnStartJourney.isEnabled = true
-            btnEndJourney.isEnabled = false
+            val intent = Intent(this, PopUpConfirmSendLocation::class.java)
+            startActivity(intent)
+            val confirm = bundle?.getBoolean("confirm")
+            if(confirm==true) {
+                getLocation("Exit")
+                btnEndJourney.setBackgroundColor(resources.getColor(R.color.gray))
+                btnStartJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
+                btnStartJourney.isEnabled = true
+                btnEndJourney.isEnabled = false
+            }
         }
     }
 
-    private fun goToLogin(){
-
+    public fun goToLogin(){
         MyCustomPrefs.clearPrefs(this)
-
         val intent = Intent(this,  MainActivity::class.java)
         startActivity(intent)
         finish()
@@ -80,6 +87,7 @@ class MenuActivity : AppCompatActivity() {
 
     private fun getLocation(concept : String){
         val now = LocalDateTime.now()
+
 
         if(checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED){
@@ -97,9 +105,9 @@ class MenuActivity : AppCompatActivity() {
             if (location != null) {
                 val latitud = location.latitude
                 val longuitud = location.longitude
-                var locationToDatabase = LocationPojo(preferencesTenant, latitud, longuitud, DateTimeFormatter.ofPattern("dd/mm/yyyy HH:mm:ss").format(now), concept)
-                refLocation.push().setValue(locationToDatabase)
 
+              //  var locationToDatabase = LocationPojo(preferencesTenant, latitud, longuitud, DateTimeFormatter.ofPattern("dd/mm/yyyy HH:mm:ss").format(now), concept)
+              //  refLocation.push().setValue(locationToDatabase)
                 Toast.makeText(
                     this@MenuActivity, "Informacion enviada" , Toast.LENGTH_LONG).show()
             }

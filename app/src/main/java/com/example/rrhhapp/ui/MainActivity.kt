@@ -35,9 +35,7 @@ class MainActivity : AppCompatActivity() {
         btnGoMenu.setOnClickListener {
             performLogin()
         }
-
     }
-
 
     private fun goToForgetPassword(){
         val intent = Intent(this, ForgetUserOrPassword::class.java)
@@ -47,14 +45,12 @@ class MainActivity : AppCompatActivity() {
     private fun goToMenu(){
         val etEmail = findViewById<EditText>(R.id.et_email).text.toString()
         val etPassword = findViewById<EditText>(R.id.et_password).text.toString()
-
         val intent = Intent(this,  MenuActivity::class.java)
         intent.putExtra("user", etEmail)
         intent.putExtra("password", etPassword)
         startActivity(intent)
         finish()
     }
-
 
     private fun createSessionPreference(jwt: String){
         val preferences = PreferenceHelper.defaultPrefs(this)
@@ -96,5 +92,4 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
 }
