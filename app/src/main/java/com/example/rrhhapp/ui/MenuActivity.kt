@@ -13,17 +13,26 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
-import butterknife.BindView
-import butterknife.Unbinder
 import com.example.rrhhapp.R
+import com.example.rrhhapp.io.ApiService
+import com.example.rrhhapp.io.response.LoginResponse
+import com.example.rrhhapp.io.response.SignonResponse
+import com.example.rrhhapp.model.Signon
 import com.example.rrhhapp.util.MyCustomPrefs
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.time.LocalDateTime
 
 class MenuActivity : AppCompatActivity() {
+
+    private val apiService: ApiService by lazy {
+        ApiService.create()
+    }
 
     private lateinit var location: FusedLocationProviderClient
     private lateinit var database: FirebaseDatabase
@@ -137,6 +146,17 @@ class MenuActivity : AppCompatActivity() {
             if (location != null) {
                 val latitud = location.latitude
                 val longuitud = location.longitude
+
+                val registry =  Signon(date = now, latitude = latitud, longitude = longuitud, token = preferencesTenant)
+                var call = apiService.postSignon(jwt,registry)
+                call.enqueue(object : Callback<SignonResponse>{
+                    override fun onResponse(call: Call<SignonResponse>, response: Response<SignonResponse>) {
+
+                    }
+                    override fun onFailure(call: Call<SignonResponse>, t: Throwable) {
+
+                    }
+                })
               //  var locationToDatabase = LocationPojo(preferencesTenant, latitud, longuitud, DateTimeFormatter.ofPattern("dd/mm/yyyy HH:mm:ss").format(now), concept)
               //  refLocation.push().setValue(locationToDatabase)
                 Toast.makeText(

@@ -36,4 +36,5 @@ object MyCustomPrefs {
         getSessionPrefs(context).edit().clear().commit()
     }
 
+
 }

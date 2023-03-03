@@ -1,11 +1,14 @@
 package com.example.rrhhapp.io
 
 import com.example.rrhhapp.io.response.LoginResponse
+import com.example.rrhhapp.io.response.SignonResponse
+import com.example.rrhhapp.model.Signon
 import com.example.rrhhapp.model.User
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
@@ -25,5 +28,10 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     @POST( value = "login")
     fun postLogin(@Body user: User): Call<LoginResponse>
+
+
+    @Headers("Content-Type: application/json")
+    @POST( value = "registry/signon")
+    fun postSignon(@Header(value= "Authorization") authHeader: String, @Body signon: Signon): Call<SignonResponse>
 
 }
