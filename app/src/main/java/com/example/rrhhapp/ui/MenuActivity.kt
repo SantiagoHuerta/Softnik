@@ -26,7 +26,9 @@ import com.google.firebase.database.FirebaseDatabase
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.util.*
 
 class MenuActivity : AppCompatActivity() {
 
@@ -52,9 +54,6 @@ class MenuActivity : AppCompatActivity() {
         val btnStartJourney = findViewById<TextView>(R.id.btn_start_journey)
         val btnEndJourney = findViewById<TextView>(R.id.btn_end_journey)
         val btnLogout = findViewById<TextView>(R.id.btn_logout)
-        val tvStartDate = findViewById<TextView>(R.id.tv_start_date)
-        val tvEndDate = findViewById<TextView>(R.id.tv_end_date)
-
       //database = FirebaseDatabase.getInstance()
       //refLocation = database.getReference("location")
 
@@ -75,15 +74,7 @@ class MenuActivity : AppCompatActivity() {
                 .setPositiveButton(
                     "CONFIRMAR"
                 ) { dialog, which ->
-                    getLocation("Entry")
-                    tvEndDate.visibility = GONE
-                    tvStartDate.visibility = VISIBLE
-                    tvStartDate.text = LocalDateTime.now().toString()
-
-                    btnEndJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
-                    btnStartJourney.setBackgroundColor(resources.getColor(R.color.gray))
-                    btnStartJourney.isEnabled = false
-                    btnEndJourney.isEnabled = true
+                    getLocation("I")
                 }
                 .setNegativeButton(
                     "VOLVER"
@@ -101,15 +92,7 @@ class MenuActivity : AppCompatActivity() {
                 .setPositiveButton(
                     "CONFIRMAR"
                 ) { dialog, which ->
-                    getLocation("Exit")
-                    tvStartDate.visibility = GONE
-                    tvEndDate.visibility = VISIBLE
-                    tvEndDate.text = LocalDateTime.now().toString()
-
-                    btnEndJourney.setBackgroundColor(resources.getColor(R.color.gray))
-                    btnStartJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
-                    btnStartJourney.isEnabled = true
-                    btnEndJourney.isEnabled = false
+                    getLocation("E")
                 }
                 .setNegativeButton(
                     "VOLVER"
@@ -120,6 +103,35 @@ class MenuActivity : AppCompatActivity() {
         }
     }
 
+    fun updateButtonsEneable(concept: String){
+        val btnStartJourney = findViewById<TextView>(R.id.btn_start_journey)
+        val btnEndJourney = findViewById<TextView>(R.id.btn_end_journey)
+        val tvStartDate = findViewById<TextView>(R.id.tv_start_date)
+        val tvEndDate = findViewById<TextView>(R.id.tv_end_date)
+
+        if(concept.equals("I")){
+            tvEndDate.visibility = GONE
+            tvStartDate.visibility = VISIBLE
+            tvStartDate.text = LocalDateTime.now().toString()
+
+            btnEndJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
+            btnStartJourney.setBackgroundColor(resources.getColor(R.color.gray))
+            btnStartJourney.isEnabled = false
+            btnEndJourney.isEnabled = true
+        }
+        else{
+            tvStartDate.visibility = GONE
+            tvEndDate.visibility = VISIBLE
+            tvEndDate.text = LocalDateTime.now().toString()
+
+            btnEndJourney.setBackgroundColor(resources.getColor(R.color.gray))
+            btnStartJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
+            btnStartJourney.isEnabled = true
+            btnEndJourney.isEnabled = false
+        }
+
+    }
+
     fun goToLogin(){
         MyCustomPrefs.clearPrefs(this)
         val intent = Intent(this,  MainActivity::class.java)
@@ -128,7 +140,9 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private fun getLocation(concept : String){
-        val now = LocalDateTime.now()
+        val date = Date()
+        val format = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
+        val dateFormat = format.format(date)
 
         if(checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED){
@@ -147,20 +161,25 @@ class MenuActivity : AppCompatActivity() {
                 val latitud = location.latitude
                 val longuitud = location.longitude
 
-                val registry =  Signon(date = now, latitude = latitud, longitude = longuitud, token = preferencesTenant)
+                val registry =  Signon(token = preferencesTenant,-37.99597508272, -57.54916992802159, date = dateFormat, concept)
                 var call = apiService.postSignon(jwt,registry)
+
                 call.enqueue(object : Callback<SignonResponse>{
                     override fun onResponse(call: Call<SignonResponse>, response: Response<SignonResponse>) {
-
+                        if(response.isSuccessful){
+                            Toast.makeText(this@MenuActivity, "Informacion enviada" , Toast.LENGTH_LONG).show()
+                            updateButtonsEneable(concept)
+                        }
+                        else{
+                            Toast.makeText(this@MenuActivity, "Error al enviar la informacion" , Toast.LENGTH_LONG).show()
+                        }
                     }
                     override fun onFailure(call: Call<SignonResponse>, t: Throwable) {
-
+                        Toast.makeText(this@MenuActivity, "Fallo de servidor" , Toast.LENGTH_LONG).show()
                     }
                 })
               //  var locationToDatabase = LocationPojo(preferencesTenant, latitud, longuitud, DateTimeFormatter.ofPattern("dd/mm/yyyy HH:mm:ss").format(now), concept)
               //  refLocation.push().setValue(locationToDatabase)
-                Toast.makeText(
-                    this@MenuActivity, "Informacion enviada" , Toast.LENGTH_LONG).show()
             }
         }
     }

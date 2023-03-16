@@ -14,7 +14,7 @@ import retrofit2.http.POST
 
 interface ApiService {
     companion object Factory{
-        private const val BASE_URL = "http://54.172.25.110/auth/"
+        private const val BASE_URL = "http://54.172.25.110/"
         fun create(): ApiService{
             val retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -26,7 +26,7 @@ interface ApiService {
     }
 
     @Headers("Content-Type: application/json")
-    @POST( value = "login")
+    @POST( value = "auth/login")
     fun postLogin(@Body user: User): Call<LoginResponse>
 
 
