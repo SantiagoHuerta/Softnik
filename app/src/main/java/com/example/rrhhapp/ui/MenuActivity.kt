@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.TextView
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
+import butterknife.OnClick
 import com.example.rrhhapp.R
 import com.example.rrhhapp.io.ApiService
 import com.example.rrhhapp.io.response.LoginResponse
@@ -103,16 +105,25 @@ class MenuActivity : AppCompatActivity() {
         }
     }
 
-    fun updateButtonsEneable(concept: String){
+    fun updateButtonsEneable(concept: String, latitud : Double, longitude : Double){
         val btnStartJourney = findViewById<TextView>(R.id.btn_start_journey)
         val btnEndJourney = findViewById<TextView>(R.id.btn_end_journey)
         val tvStartDate = findViewById<TextView>(R.id.tv_start_date)
         val tvEndDate = findViewById<TextView>(R.id.tv_end_date)
+        val tvStartLocation = findViewById<TextView>(R.id.tv_start_location)
+        val tvEndLocation = findViewById<TextView>(R.id.tv_end_location)
+        val date = Date()
+        val format = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
+        val dateFormat = format.format(date)
 
         if(concept.equals("I")){
             tvEndDate.visibility = GONE
+            tvEndLocation.visibility = GONE
             tvStartDate.visibility = VISIBLE
-            tvStartDate.text = LocalDateTime.now().toString()
+            tvStartLocation.visibility = VISIBLE
+
+            tvStartDate.text = dateFormat.toString()
+            tvStartLocation.text = "Lat: $latitud Long: $longitude"
 
             btnEndJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
             btnStartJourney.setBackgroundColor(resources.getColor(R.color.gray))
@@ -122,14 +133,17 @@ class MenuActivity : AppCompatActivity() {
         else{
             tvStartDate.visibility = GONE
             tvEndDate.visibility = VISIBLE
-            tvEndDate.text = LocalDateTime.now().toString()
+            tvStartLocation.visibility = GONE
+            tvEndLocation.visibility = VISIBLE
+
+            tvEndDate.text = dateFormat.toString()
+            tvEndLocation.text = "Lat: $latitud Long: $longitude"
 
             btnEndJourney.setBackgroundColor(resources.getColor(R.color.gray))
             btnStartJourney.setBackgroundColor(resources.getColor(R.color.teal_700))
             btnStartJourney.isEnabled = true
             btnEndJourney.isEnabled = false
         }
-
     }
 
     fun goToLogin(){
@@ -137,6 +151,10 @@ class MenuActivity : AppCompatActivity() {
         val intent = Intent(this,  MainActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    fun getUserInfo(view: View){
+        Toast.makeText(this, "Esta funcion esta en desarrollo", Toast.LENGTH_SHORT).show()
     }
 
     private fun getLocation(concept : String){
@@ -161,14 +179,14 @@ class MenuActivity : AppCompatActivity() {
                 val latitud = location.latitude
                 val longuitud = location.longitude
 
-                val registry =  Signon(token = preferencesTenant,-37.99597508272, -57.54916992802159, date = dateFormat, concept)
+                val registry =  Signon(token = preferencesTenant, latitude =  latitud, longitude =  longuitud, date = dateFormat, concept)
                 var call = apiService.postSignon(jwt,registry)
 
                 call.enqueue(object : Callback<SignonResponse>{
                     override fun onResponse(call: Call<SignonResponse>, response: Response<SignonResponse>) {
                         if(response.isSuccessful){
                             Toast.makeText(this@MenuActivity, "Informacion enviada" , Toast.LENGTH_LONG).show()
-                            updateButtonsEneable(concept)
+                            updateButtonsEneable(concept, latitud, longuitud)
                         }
                         else{
                             Toast.makeText(this@MenuActivity, "Error al enviar la informacion" , Toast.LENGTH_LONG).show()

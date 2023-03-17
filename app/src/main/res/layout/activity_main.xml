@@ -74,7 +74,7 @@
           android:layout_gravity="bottom"
           android:layout_marginLeft="26dp"
           android:layout_marginRight="26dp"
-          android:layout_marginTop="250dp"
+          android:layout_marginTop="400dp"
           android:background="@drawable/rounded_button_enable"
           android:backgroundTint="@color/teal_700"
           android:text="Iniciar sesion"
